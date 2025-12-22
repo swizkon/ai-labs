@@ -4,7 +4,7 @@ namespace julkort2025;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.WriteLine("Hello, World!");
 
@@ -25,7 +25,8 @@ class Program
         Console.WriteLine($"InputFolder: {appConfig.InputFolder}");
         Console.WriteLine($"OutputFolder: {appConfig.OutputFolder}"); 
         
-
+        var imageEditor = new AIImageEditor(appConfig);
+        await imageEditor.CreateXmasCard();
     }
 }
 
