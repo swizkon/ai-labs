@@ -14,24 +14,33 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/textfile", (int? size = null) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    System.Threading.Thread.Sleep(1000);
+    var targetSize = size ?? 100; // Default to 100 bytes if not specified
+    var textContent = GenerateTextContent(targetSize);
+    return Results.Text(textContent, "text/plain");
 })
-.WithName("GetWeatherForecast");
+.WithName("GetTextFile");
+
+string GenerateTextContent(int sizeInBytes)
+{
+    const string baseText = "Hello, this is a text file!\n";
+    var content = new System.Text.StringBuilder();
+    
+    while (content.Length < sizeInBytes)
+    {
+        var remaining = sizeInBytes - content.Length;
+        if (remaining < baseText.Length)
+        {
+            content.Append(baseText.Substring(0, remaining));
+            break;
+        }
+        content.Append(baseText);
+    }
+    
+    return content.ToString();
+}
 
 app.Run();
 

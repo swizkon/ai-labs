@@ -10,9 +10,11 @@ class Program
         var downloadSpecs = new List<DownloadSpec>
         {
             // Example downloads - replace with your actual URLs and paths
-            new DownloadSpec("https://example.com/file1.zip", "downloads/file1.zip"),
-            new DownloadSpec("https://example.com/file2.zip", "downloads/file2.zip"),
-            new DownloadSpec("https://example.com/file3.zip", "downloads/file3.zip")
+            new DownloadSpec("http://localhost:5057/textfile?size=3000", "downloads/file1.txt"),
+            new DownloadSpec("http://localhost:5057/textfile?size=30000", "downloads/file2.txt"),
+            new DownloadSpec("http://localhost:5057/textfile?size=300000", "downloads/file3.txt"),
+            new DownloadSpec("http://localhost:5057/textfile?size=300000", "downloads/file4.txt"),
+            new DownloadSpec("http://localhost:5057/textfile?size=300000", "downloads/file5.txt")
         };
 
         var batch = new DownloadBatch(downloadSpecs);

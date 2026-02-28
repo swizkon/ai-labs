@@ -21,8 +21,10 @@ public class ConsoleProgressReporter : IProgress<DownloadProgress>
 
     private void UpdateConsole()
     {
+        System.Threading.Thread.Sleep(300);
         lock (_consoleLock)
         {
+            /*
             // Clear previous progress lines
             for (int i = 0; i < _lastReportedLineCount; i++)
             {
@@ -30,47 +32,48 @@ public class ConsoleProgressReporter : IProgress<DownloadProgress>
                 System.Console.Write(new string(' ', System.Console.WindowWidth));
                 System.Console.SetCursorPosition(0, System.Console.CursorTop);
             }
+            */
 
-        var activeDownloads = _activeDownloads.Values
-            .Where(d => d.Status == DownloadStatus.Downloading || d.Status == DownloadStatus.Pending)
-            .OrderBy(d => d.FileIndex)
-            .ToList();
+            var activeDownloads = _activeDownloads.Values
+                .Where(d => d.Status == DownloadStatus.Downloading || d.Status == DownloadStatus.Pending)
+                .OrderBy(d => d.FileIndex)
+                .ToList();
 
-        var completedCount = _activeDownloads.Values.Count(d => d.Status == DownloadStatus.Completed);
-        var failedCount = _activeDownloads.Values.Count(d => d.Status == DownloadStatus.Failed);
-        var totalFiles = _activeDownloads.Values.FirstOrDefault()?.TotalFiles ?? 0;
+            var completedCount = _activeDownloads.Values.Count(d => d.Status == DownloadStatus.Completed);
+            var failedCount = _activeDownloads.Values.Count(d => d.Status == DownloadStatus.Failed);
+            var totalFiles = _activeDownloads.Values.FirstOrDefault()?.TotalFiles ?? 0;
 
-        // Display overall progress
-        System.Console.WriteLine($"Overall Progress: {completedCount + failedCount}/{totalFiles} files processed");
-        System.Console.WriteLine($"  Completed: {completedCount} | Failed: {failedCount}");
-        System.Console.WriteLine();
+            // Display overall progress
+            System.Console.WriteLine($"Overall Progress: {completedCount + failedCount}/{totalFiles} files processed");
+            System.Console.WriteLine($"  Completed: {completedCount} | Failed: {failedCount}");
+            System.Console.WriteLine();
 
-        // Display active downloads
-        if (activeDownloads.Any())
-        {
-            System.Console.WriteLine("Active Downloads:");
-            foreach (var download in activeDownloads)
+            // Display active downloads
+            if (activeDownloads.Any())
             {
-                var statusIcon = download.Status switch
+                System.Console.WriteLine("Active Downloads:");
+                foreach (var download in activeDownloads)
                 {
-                    DownloadStatus.Pending => "[ ]",
-                    DownloadStatus.Downloading => "[↓]",
-                    _ => "   "
-                };
+                    var statusIcon = download.Status switch
+                    {
+                        DownloadStatus.Pending => "[ ]",
+                        DownloadStatus.Downloading => "[↓]",
+                        _ => "   "
+                    };
 
-                var progressBar = GetProgressBar(download.Percentage, 30);
-                var sizeInfo = download.TotalBytes.HasValue
-                    ? $"{FormatBytes(download.BytesDownloaded)} / {FormatBytes(download.TotalBytes.Value)}"
-                    : FormatBytes(download.BytesDownloaded);
+                    var progressBar = GetProgressBar(download.Percentage, 30);
+                    var sizeInfo = download.TotalBytes.HasValue
+                        ? $"{FormatBytes(download.BytesDownloaded)} / {FormatBytes(download.TotalBytes.Value)}"
+                        : FormatBytes(download.BytesDownloaded);
 
-                System.Console.WriteLine(
-                    $"  {statusIcon} [{download.FileIndex}/{totalFiles}] {Truncate(download.FileName, 40)}");
-                System.Console.WriteLine(
-                    $"      {progressBar} {download.Percentage:F1}% | {sizeInfo}");
+                    System.Console.WriteLine(
+                        $"  {statusIcon} [{download.FileIndex}/{totalFiles}] {Truncate(download.FileName, 40)}");
+                    System.Console.WriteLine(
+                        $"      {progressBar} {download.Percentage:F1}% | {sizeInfo}");
+                }
             }
-        }
 
-        _lastReportedLineCount = System.Console.CursorTop;
+            _lastReportedLineCount = System.Console.CursorTop;
         }
     }
 
@@ -78,6 +81,7 @@ public class ConsoleProgressReporter : IProgress<DownloadProgress>
     {
         lock (_consoleLock)
         {
+            /*
             // Clear previous progress
             for (int i = 0; i < _lastReportedLineCount; i++)
             {
@@ -85,6 +89,7 @@ public class ConsoleProgressReporter : IProgress<DownloadProgress>
                 System.Console.Write(new string(' ', System.Console.WindowWidth));
                 System.Console.SetCursorPosition(0, System.Console.CursorTop);
             }
+            */
 
             var successful = results.Where(r => r.Success).ToList();
             var failed = results.Where(r => !r.Success).ToList();
