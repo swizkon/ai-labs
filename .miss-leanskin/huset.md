@@ -2,7 +2,9 @@
 
 
 ## Källaren
+
   [ ] Måla
+
   [ ] Plywood på bänkarna
 
 
