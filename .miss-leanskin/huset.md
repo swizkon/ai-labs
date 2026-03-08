@@ -2,7 +2,8 @@
 
 
 ## Källaren
-  [ ] Måla 
+  [ ] Måla
+  [ ] Plywood på bänkarna
 
 
 ## Lilla toan
