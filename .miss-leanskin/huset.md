@@ -6,4 +6,4 @@
 
 
 ## Lilla toan
-  [ ]
+  [ ] Fixa golvet
