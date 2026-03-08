@@ -9,3 +9,4 @@
 
 ## Lilla toan
   - [ ] Fixa golvet
+  - [ ] Pärlspont
