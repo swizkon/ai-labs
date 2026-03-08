@@ -3,10 +3,10 @@
 
 ## Källaren
 
-  - [] Måla
-  - [] Plywood på bänkarna
+  - [ ] Måla
+  - [ ] Plywood på bänkarna
 
 
 ## Lilla toan
   - [ ] Fixa golvet
-  - [ ] Pärlspont
+  - [ ] Pärlspont och byst
