@@ -1,0 +1,219 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "options": {
+          "trackLastMessageId": true
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        224
+      ],
+      "id": "2896da19-da59-4947-9336-e5a346eae750",
+      "name": "Email Trigger (IMAP)",
+      "retryOnFail": false,
+      "credentials": {
+        "imap": {
+          "id": "sFDWSCFZVLVvE6rW",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "message": "={{ $json.textPlain }}\n\n{{ $json.subject }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        128
+      ],
+      "id": "f63e6413-47d3-4b5b-93b6-9f8e124bc1a2",
+      "name": "Send a message",
+      "webhookId": "a07bcda5-d008-4afb-b0a4-a4cd305ae33d",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.todoist.com/api/v1/projects",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "todoistApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        320
+      ],
+      "id": "acd365d1-dbc3-4116-bed0-4a4643700e50",
+      "name": "HTTP Request",
+      "notesInFlow": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "pdasERFNfTa4zvyr",
+          "name": "todoist"
+        },
+        "todoistApi": {
+          "id": "r7Bp3OKgiVYVffLQ",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        -96
+      ],
+      "id": "6f8a5346-34ae-44d5-9e23-de9cbadc36f9",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an information extraction system.\n\nYour task is to parse a provided HTML document and extract the **recipe ingredients**.\n\nInstructions:\n\n1. Analyze the HTML structure and text content.\n2. Identify sections that contain **ingredients lists**. These are often found in:\n\n   * `<ul>` or `<ol>` lists\n   * elements with class or id names containing words like: `ingredient`, `ingredients`, `recipe-ingredient`, `wprm-recipe-ingredient`, etc.\n3. Ignore unrelated content such as:\n\n   * instructions\n   * ads\n   * comments\n   * navigation\n   * scripts and styles\n4. Extract each ingredient as a **clean text string**.\n5. Remove HTML tags and extra whitespace.\n6. Preserve the ingredient wording exactly as written when possible.\n7. Do not include duplicates.\n8. If quantities and units exist, keep them.\n\nOutput format:\n\nReturn **only JSON** in the following format:\n\n```json\n{\n  \"title\": \"The name of the recipe\",\n  \"ingredients\": [\n    \"1 cup flour\",\n    \"2 eggs\",\n    \"1/2 tsp salt\"\n  ]\n}\n```\n\nRules:\n\n* If no ingredients are found, return:\n\n```json\n{\n  \"title\": \"The name of the recipe\",\n  \"ingredients\": []\n}\n```\n\n* Do not include explanations or extra text.\n\nInput HTML:\n{{ $json.data }}\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -192,
+        -96
+      ],
+      "id": "f0836d91-7d68-46af-8843-3da56521d849",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "gqoNBnNMBifKbjLz",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -96
+      ],
+      "id": "5215d44a-c131-4aa5-83b2-0bd98e42256a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "formTitle": "Enter link to recipe",
+        "formDescription": "This will scrape the url and try to extract the important data",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "link",
+              "placeholder": "Enter a link here",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -640,
+        -96
+      ],
+      "id": "55206525-9e5d-4017-adec-4926dc39fbfa",
+      "name": "On form submission",
+      "webhookId": "25b17f4e-be36-4ece-bb63-d38d6d5241e7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "38a8539d-ed88-43c2-a975-231e5f1b719e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "41e4339822f342a9c22634bcca3af676e9e4afa3cb15e79a40a0389abc50fafb"
+  },
+  "id": "To1EZtoQfRjVbulv",
+  "tags": []
+}
