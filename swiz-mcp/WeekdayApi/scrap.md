@@ -1,0 +1,1 @@
+Skapa en bild föreställande en pyramid eller korthus. Längst ner är det "blue collar"-arbetare som har stora problem att hålla upp lagret ovanför. I mitten är det "white collar"-arbetare som har lite tungt. På toppen är det rika människor som ser ut som grisar och får pengar rinande ner i halsen. En text ska finnas med "Det blir lite tyngre nu, så bit i".
