@@ -4,7 +4,12 @@
   type Envelope = {
     ts: string;
     source: "http" | "ws-device";
-    payload: unknown;
+    payload: Payload;
+  };
+
+  type Payload = {
+    source: string;
+    occupancy: boolean;
   };
 
   type Conn = "connecting" | "open" | "closed" | "error";
@@ -13,6 +18,7 @@
   let messages = $state<Envelope[]>([]);
   let audioEnabled = $state(false);
   let audioRef: HTMLAudioElement | null = $state(null);
+  let resetAudioRef: HTMLAudioElement | null = $state(null);
 
   const MAX = 100;
 
@@ -44,6 +50,15 @@
     });
   }
 
+  function playReset(): void {
+    const el = resetAudioRef;
+    if (!el || !audioEnabled) return;
+    el.currentTime = 0;
+    void el.play().catch(() => {
+      /* autoplay or decode */
+    });
+  }
+
   function connect(): void {
     clearReconnect();
     socket?.close();
@@ -65,7 +80,14 @@
       try {
         const data = JSON.parse(ev.data) as Envelope;
         messages = [data, ...messages].slice(0, MAX);
-        playChime();
+
+        if (data.payload.occupancy === true) {
+          playChime();
+        }
+
+        if (data.payload.occupancy == false) {
+          playReset();
+        }
       } catch {
         /* ignore malformed */
       }
@@ -107,7 +129,7 @@
   }
 </script>
 
-<!-- <audio bind:this={audioRef} src="/notify.wav" preload="auto"></audio> -->
+<audio bind:this={resetAudioRef} src="/notify.wav" preload="auto"></audio>
 
 <audio bind:this={audioRef} src="/silicon_valley.mp3" preload="auto"></audio>
 
