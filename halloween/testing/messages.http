@@ -1,0 +1,28 @@
+
+###
+# Signal the sensor is active
+POST http://127.0.0.1:3000/ingest
+Content-Type: application/json
+
+{
+  "battery": 100,
+  "illuminance": 1,
+  "linkquality": 255,
+  "occupancy": true,
+  "voltage": 2900,
+  "source": "vallhorn1"
+}
+
+###
+# Signal the sensor is active
+POST http://127.0.0.1:3000/ingest
+Content-Type: application/json
+
+{
+  "battery": 100,
+  "illuminance": 1,
+  "linkquality": 255,
+  "occupancy": false,
+  "voltage": 2900,
+  "source": "vallhorn1"
+}

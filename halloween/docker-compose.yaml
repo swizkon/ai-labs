@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nodered:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"  # Expose Node-RED on host port 1880
+    volumes:
+      - ./node-red-data:/data  # Persist data in a local folder
+      - ./mqtt.log:/var/log/nodered-mqtt.log:rw  # Log MQTT messages to a file
+    restart: unless-stopped  # Optional: Restart automatically unless manually stopped
+
+  ingest:
+    build:
+      context: ./frontend/server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      CORS_ORIGIN: "*"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  iot-frontend:
+    build:
+      context: ./frontend/client
+      dockerfile: Dockerfile
+    ports:
+      - "9090:80"
+    depends_on:
+      ingest:
+        condition: service_healthy
+    restart: unless-stopped

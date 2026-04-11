@@ -1,0 +1,543 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "fc8caaf3658474aa",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "16ef04bbcdba60b6",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5f4f9b4bf4e4169d",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "host.docker.internal",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "test/topic",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "nodered in da house",
+        "birthMsg": {
+            "contentType": "text/plain"
+        },
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e5eb28ad92474cae",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "ZoneEnteredEvent",
+        "field": "yoyoyo",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This is the payload: {{payload}} !",
+        "output": "str",
+        "x": 1250,
+        "y": 260,
+        "wires": [
+            [
+                "176773c1dd3c8199"
+            ]
+        ]
+    },
+    {
+        "id": "0542d3a82719f274",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "AllStoresProjection",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7d868098a020a14d",
+        "type": "status",
+        "z": "f6f2187d.f17ca8",
+        "name": "TurnstileSignal",
+        "scope": null,
+        "x": 820,
+        "y": 180,
+        "wires": [
+            [
+                "bd6a1614ba867770"
+            ]
+        ]
+    },
+    {
+        "id": "84727d275e70cb32",
+        "type": "exec",
+        "z": "f6f2187d.f17ca8",
+        "command": "Process SensorSignal",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 1020,
+        "y": 260,
+        "wires": [
+            [
+                "efbb1b5d61fe1a8e"
+            ],
+            [
+                "e5eb28ad92474cae"
+            ],
+            [
+                "3ede86c0da23c1bd"
+            ]
+        ]
+    },
+    {
+        "id": "bd6a1614ba867770",
+        "type": "delay",
+        "z": "f6f2187d.f17ca8",
+        "name": "Validate input",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 840,
+        "y": 320,
+        "wires": [
+            [
+                "84727d275e70cb32"
+            ]
+        ]
+    },
+    {
+        "id": "a7110bc82a8207e5",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "SingleStoreProjection",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1680,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3ede86c0da23c1bd",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "StoreEnteredEvent",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This is the payload: {{payload}} !",
+        "output": "str",
+        "x": 1250,
+        "y": 300,
+        "wires": [
+            [
+                "176773c1dd3c8199"
+            ]
+        ]
+    },
+    {
+        "id": "176773c1dd3c8199",
+        "type": "file",
+        "z": "f6f2187d.f17ca8",
+        "name": "Eventstore",
+        "filename": "",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1490,
+        "y": 260,
+        "wires": [
+            [
+                "a7110bc82a8207e5",
+                "0542d3a82719f274",
+                "8ee8a5edc7b0fd50"
+            ]
+        ]
+    },
+    {
+        "id": "efbb1b5d61fe1a8e",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "TurnstilePassageDetected",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This is the payload: {{payload}} !",
+        "output": "str",
+        "x": 1280,
+        "y": 220,
+        "wires": [
+            [
+                "176773c1dd3c8199"
+            ]
+        ]
+    },
+    {
+        "id": "8ee8a5edc7b0fd50",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "AverageTimeProjection",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "08e43be5563db3d9",
+        "type": "csv",
+        "z": "fc8caaf3658474aa",
+        "name": "Parse",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 410,
+        "y": 400,
+        "wires": [
+            [
+                "3f04e4418c7707c0",
+                "2f1e8e1f508a44f5",
+                "2f99a8b6506097c4"
+            ]
+        ]
+    },
+    {
+        "id": "43b17a60fc542ef6",
+        "type": "websocket in",
+        "z": "fc8caaf3658474aa",
+        "name": "Raw details format ",
+        "server": "",
+        "client": "",
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "08e43be5563db3d9"
+            ]
+        ]
+    },
+    {
+        "id": "3f04e4418c7707c0",
+        "type": "function",
+        "z": "fc8caaf3658474aa",
+        "name": "Transform for AlertsView",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f1e8e1f508a44f5",
+        "type": "function",
+        "z": "fc8caaf3658474aa",
+        "name": "Transform for AssetsView",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f99a8b6506097c4",
+        "type": "function",
+        "z": "fc8caaf3658474aa",
+        "name": "Transform for Dashboard",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd4a75fc6d3bfd9d",
+        "type": "mqtt in",
+        "z": "16ef04bbcdba60b6",
+        "name": "MyTest",
+        "topic": "test/topic",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5f4f9b4bf4e4169d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 450,
+        "y": 180,
+        "wires": [
+            [
+                "9eabf8fc8659e93f",
+                "5c74024f8f85729d"
+            ]
+        ]
+    },
+    {
+        "id": "9eabf8fc8659e93f",
+        "type": "debug",
+        "z": "16ef04bbcdba60b6",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5c74024f8f85729d",
+        "type": "file",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "filename": "/var/log/nodered-mqtt.log",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 990,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "522d1c41f455f835",
+        "type": "mqtt in",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "topic": "zigbee2mqtt/bridge/state",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5f4f9b4bf4e4169d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 410,
+        "y": 300,
+        "wires": [
+            [
+                "9eabf8fc8659e93f",
+                "5c74024f8f85729d"
+            ]
+        ]
+    },
+    {
+        "id": "fe701e1bb32ad044",
+        "type": "mqtt in",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "topic": "zigbee2mqtt/bridge/health",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5f4f9b4bf4e4169d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 410,
+        "y": 440,
+        "wires": [
+            [
+                "9eabf8fc8659e93f",
+                "5c74024f8f85729d"
+            ]
+        ]
+    },
+    {
+        "id": "52861324be47125d",
+        "type": "mqtt in",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "topic": "zigbee2mqtt/vallhorn1",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5f4f9b4bf4e4169d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 360,
+        "y": 540,
+        "wires": [
+            [
+                "e07b5b888be958b1"
+            ]
+        ]
+    },
+    {
+        "id": "e07b5b888be958b1",
+        "type": "change",
+        "z": "16ef04bbcdba60b6",
+        "name": "MapData",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "payload.update",
+                "pt": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.source",
+                "pt": "msg",
+                "to": "vallhorn1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 580,
+        "wires": [
+            [
+                "20ec0894511d7867",
+                "5c74024f8f85729d",
+                "3f4606e566cd1ba8"
+            ]
+        ]
+    },
+    {
+        "id": "20ec0894511d7867",
+        "type": "debug",
+        "z": "16ef04bbcdba60b6",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "3f4606e566cd1ba8",
+        "type": "http request",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://ingest:3000/ingest",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 770,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    }
+]
