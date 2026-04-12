@@ -359,8 +359,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 450,
-        "y": 180,
+        "x": 410,
+        "y": 220,
         "wires": [
             [
                 "9eabf8fc8659e93f",
@@ -381,7 +381,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 990,
+        "x": 770,
         "y": 400,
         "wires": []
     },
@@ -459,7 +459,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 360,
+        "x": 240,
         "y": 540,
         "wires": [
             [
@@ -491,13 +491,14 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 640,
-        "y": 500,
+        "x": 600,
+        "y": 580,
         "wires": [
             [
                 "20ec0894511d7867",
                 "5c74024f8f85729d",
-                "3f4606e566cd1ba8"
+                "3f4606e566cd1ba8",
+                "88a1a655324617e0"
             ]
         ]
     },
@@ -537,6 +538,91 @@
         "x": 770,
         "y": 760,
         "wires": [
+            []
+        ]
+    },
+    {
+        "id": "69d9188df67bbc42",
+        "type": "mqtt in",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "topic": "test/topic",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5f4f9b4bf4e4169d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 60,
+        "wires": [
+            [
+                "55e4bd4d0cba5b47"
+            ]
+        ]
+    },
+    {
+        "id": "55e4bd4d0cba5b47",
+        "type": "debug",
+        "z": "16ef04bbcdba60b6",
+        "name": "incoming",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "88a1a655324617e0",
+        "type": "mqtt out",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "topic": "test/topic",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5f4f9b4bf4e4169d",
+        "x": 330,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "03d0bb95a0baf6cc",
+        "type": "switch",
+        "z": "16ef04bbcdba60b6",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [],
             []
         ]
     }
