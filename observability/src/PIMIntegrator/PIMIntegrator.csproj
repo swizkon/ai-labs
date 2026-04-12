@@ -4,7 +4,7 @@
     <AssemblyName>PIMIntegrator</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="IBMMQDotnetClient" Version="9.4.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
   </ItemGroup>

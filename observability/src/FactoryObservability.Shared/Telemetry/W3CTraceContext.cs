@@ -7,6 +7,13 @@ public static class W3CTraceContext
     private const string Version = "00";
     private const string Flags = "01";
 
+    /// <summary>
+    /// Prefer an explicit <see cref="Activity"/> context; otherwise <see cref="Activity.Current"/>
+    /// (handles cases where <see cref="ActivitySource.StartActivity"/> returns null but the ambient activity is still set).
+    /// </summary>
+    public static ActivityContext ResolveContext(Activity? activity) =>
+        activity?.Context ?? Activity.Current?.Context ?? default;
+
     /// <summary>Build a W3C traceparent from the current activity context.</summary>
     public static string FormatTraceParent(ActivityContext context)
     {
