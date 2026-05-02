@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = SerilogBootstrap.CreateLogger(ServiceNames.BroadcastParser);
 builder.Host.UseSerilog();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.Configure<IbmMqOptions>(builder.Configuration.GetSection(IbmMqOptions.SectionName));
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
@@ -27,6 +30,9 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapGet("/healthz", () => Results.Ok(new { status = "healthy" }));
 
