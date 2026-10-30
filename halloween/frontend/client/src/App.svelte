@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import soundbank from "virtual:soundbank";
 
   type Envelope = {
     ts: string;
@@ -43,7 +44,8 @@
 
   function playChime(): void {
     const el = audioRef;
-    if (!el || !audioEnabled) return;
+    if (!el || !audioEnabled || soundbank.length === 0) return;
+    el.src = soundbank[Math.floor(Math.random() * soundbank.length)];
     el.currentTime = 0;
     void el.play().catch(() => {
       /* autoplay or decode */
@@ -85,9 +87,12 @@
           playChime();
         }
 
+        // Skip playing reset sound for occupancy false
+        /*
         if (data.payload.occupancy == false) {
           playReset();
         }
+        */
       } catch {
         /* ignore malformed */
       }
@@ -131,7 +136,7 @@
 
 <audio bind:this={resetAudioRef} src="/notify.wav" preload="auto"></audio>
 
-<audio bind:this={audioRef} src="/silicon_valley.mp3" preload="auto"></audio>
+<audio bind:this={audioRef} src={soundbank[0]} preload="auto"></audio>
 
 <main class="dashboard">
   <header class="head">
