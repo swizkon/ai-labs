@@ -20,8 +20,18 @@
   let audioEnabled = $state(false);
   let audioRef: HTMLAudioElement | null = $state(null);
   let resetAudioRef: HTMLAudioElement | null = $state(null);
+  let played = $state<{ ts: string; sound: string }[]>([]);
 
   const MAX = 100;
+
+  function soundName(url: string): string {
+    const file = url.split("/").pop() ?? url;
+    try {
+      return decodeURIComponent(file);
+    } catch {
+      return file;
+    }
+  }
 
   function wsUrl(): string {
     const fromEnv = import.meta.env.VITE_WS_URL as string | undefined;
@@ -45,20 +55,29 @@
   function playChime(): void {
     const el = audioRef;
     if (!el || !audioEnabled || soundbank.length === 0) return;
-    el.src = soundbank[Math.floor(Math.random() * soundbank.length)];
+    if (!el.paused && !el.ended) return;
+    const sound = soundbank[Math.floor(Math.random() * soundbank.length)];
+    played = [{ ts: new Date().toISOString(), sound }, ...played].slice(0, MAX);
+    el.src = sound;
     el.currentTime = 0;
     void el.play().catch(() => {
-      /* autoplay or decode */
+      // autoplay or decode
     });
   }
 
-  function playReset(): void {
+  function resetChime(): void {
+    if (audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
+    }
+    /*
     const el = resetAudioRef;
     if (!el || !audioEnabled) return;
     el.currentTime = 0;
     void el.play().catch(() => {
-      /* autoplay or decode */
+      // autoplay or decode
     });
+    */
   }
 
   function connect(): void {
@@ -87,12 +106,10 @@
           playChime();
         }
 
-        // Skip playing reset sound for occupancy false
-        /*
         if (data.payload.occupancy == false) {
-          playReset();
+          resetChime();
         }
-        */
+        
       } catch {
         /* ignore malformed */
       }
@@ -140,7 +157,7 @@
 
 <main class="dashboard">
   <header class="head">
-    <h1>IoT ingest</h1>
+    <h1>IoT ingest soundbank</h1>
     <p class="sub">
       Live messages from <code>POST /ingest</code> and <code>/ws/device</code>
     </p>
@@ -169,6 +186,24 @@
       {/if}
     </div>
   </header>
+
+  <section class="played" aria-label="Played sounds">
+    <h2>Played sounds</h2>
+    {#if played.length === 0}
+      <p class="empty muted">No sounds played yet.</p>
+    {:else}
+      <ul class="list">
+        {#each played as p, i (`${p.ts}-${i}`)}
+          <li class="card">
+            <div class="meta">
+              <time datetime={p.ts}>{p.ts}</time>
+              <span class="src">{soundName(p.sound)}</span>
+            </div>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </section>
 
   <section class="feed" aria-live="polite">
     {#if messages.length === 0}
@@ -283,6 +318,19 @@
 
   .feed {
     margin-top: 1.5rem;
+  }
+
+  .played {
+    margin-top: 1.5rem;
+  }
+
+  .played h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .played .meta {
+    margin-bottom: 0;
   }
 
   .empty {
