@@ -21,8 +21,12 @@
   let audioRef: HTMLAudioElement | null = $state(null);
   let resetAudioRef: HTMLAudioElement | null = $state(null);
   let played = $state<{ ts: string; sound: string }[]>([]);
+  let wakeLock: WakeLockSentinel | null = null;
+  let awake = $state(false);
 
   const MAX = 100;
+  const COOLDOWN_MS = 30_000;
+  let lastPlayedAt = 0;
 
   function soundName(url: string): string {
     const file = url.split("/").pop() ?? url;
@@ -56,6 +60,9 @@
     const el = audioRef;
     if (!el || !audioEnabled || soundbank.length === 0) return;
     if (!el.paused && !el.ended) return;
+    const now = Date.now();
+    if (now - lastPlayedAt < COOLDOWN_MS) return;
+    lastPlayedAt = now;
     const sound = soundbank[Math.floor(Math.random() * soundbank.length)];
     played = [{ ts: new Date().toISOString(), sound }, ...played].slice(0, MAX);
     el.src = sound;
@@ -116,8 +123,29 @@
     };
   }
 
+  async function requestWakeLock(): Promise<void> {
+    if (!("wakeLock" in navigator) || document.visibilityState !== "visible") return;
+    if (wakeLock && !wakeLock.released) return;
+    try {
+      wakeLock = await navigator.wakeLock.request("screen");
+      awake = true;
+      wakeLock.addEventListener("release", () => {
+        awake = false;
+      });
+    } catch {
+      // not allowed (insecure context, battery saver, etc.)
+      awake = false;
+    }
+  }
+
+  function onVisibilityChange(): void {
+    // the browser releases the lock when the tab is hidden; re-acquire on return
+    if (document.visibilityState === "visible") void requestWakeLock();
+  }
+
   function enableAudio(): void {
     audioEnabled = true;
+    void requestWakeLock();
     const el = audioRef;
     if (el) {
       void el
@@ -134,11 +162,15 @@
 
   onMount(() => {
     connect();
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    void requestWakeLock();
   });
 
   onDestroy(() => {
     clearReconnect();
     socket?.close();
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    void wakeLock?.release();
   });
 
   function formatPayload(p: unknown): string {
@@ -184,6 +216,7 @@
       {:else}
         <span class="muted">Sound on</span>
       {/if}
+      <span class="muted">{awake ? "Screen stays awake" : "Wake lock off"}</span>
     </div>
   </header>
 
